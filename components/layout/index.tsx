@@ -1,15 +1,43 @@
 import { Box, Grid } from "grommet";
-import React from "react";
+import React, { useEffect } from "react";
 import SideBar from "./sidebar";
 import { LayoutProps } from "./types";
-import styled from 'styled-components';
+import styled, { createGlobalStyle } from "styled-components";
+import { useRecoilValue } from "recoil";
+import { userState } from "../../context";
+import { useRouter } from "next/router";
+import MainLoader from "./loaders/main-loader";
 
 const Container = styled(Grid)`
-    min-height:100vh;
+  min-height: 100vh;
 `;
+
+const GlobalStyle = createGlobalStyle`
+  body {
+    margin:0;
+    padding:0;
+  }
+`;
+
+const LoaderWrap = styled.div`
+    position:absolute;
+    width:100%;
+    height:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+`
 
 const Layout: React.FC<LayoutProps> = (props) => {
   let { children } = props;
+  let userInfo = useRecoilValue(userState);
+  let { push } = useRouter();
+
+  useEffect(() => {
+    if (!userInfo?.token) {
+      push("/login");
+    }
+  }, []);
 
   return (
     <Container
@@ -29,15 +57,24 @@ const Layout: React.FC<LayoutProps> = (props) => {
         },
       ]}
     >
-      <Box gridArea="sidebar" fill>
-          <SideBar/>
-      </Box>
-      <Box gridArea="main" fill>
-          {children}
-      </Box>
+      <GlobalStyle />
+      {!userInfo?.token && (
+        <LoaderWrap>
+          <MainLoader />
+        </LoaderWrap>
+      )}
+      {userInfo?.token && (
+        <>
+          <Box gridArea="sidebar" fill>
+            <SideBar />
+          </Box>
+          <Box gridArea="main" fill pad="medium">
+            {children}
+          </Box>
+        </>
+      )}
     </Container>
   );
 };
-
 
 export default Layout;

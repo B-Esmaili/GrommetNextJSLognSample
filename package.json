@@ -7,11 +7,15 @@
     "start": "next start"
   },
   "dependencies": {
+    "faker": "^5.5.3",
+    "framer-motion": "^4.1.17",
     "grommet": "^2.5.5",
     "next": "latest",
     "react": "^16.7.0",
+    "react-content-loader": "^6.0.3",
     "react-dom": "^16.7.0",
     "recoil": "^0.3.0",
+    "restful-react": "^15.6.0",
     "styled-components": "^5.3.0"
   },
   "devDependencies": {

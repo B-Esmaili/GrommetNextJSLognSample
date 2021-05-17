@@ -10,18 +10,27 @@ import {
 } from "grommet";
 import { createGlobalStyle } from "styled-components";
 import styled from "styled-components";
-import { Login as LoginIcon, UserManager } from "grommet-icons";
+import { Login as LoginIcon, UserManager, User, Keyboard } from "grommet-icons";
 import { useRecoilState } from "recoil";
 import { userState } from "../context";
 import { useState } from "react";
+import { useRouter } from "next/dist/client/router";
 
 const Container = styled(Box)`
   min-height: 100vh;
 `;
 
+const GlobalStyle = createGlobalStyle`
+   html,body{
+     margin:0;
+     padding:0
+   }
+`;
+
 const Login = () => {
   let [loading, setLoading] = useState(false);
   const [, setUserInfo] = useRecoilState(userState);
+  let {push : navigatePage} = useRouter();
 
   const handleSubmit = async ({ value }) => {
     setLoading(true);
@@ -36,26 +45,38 @@ const Login = () => {
     let result = await response.json();
 
     if (result.token) {
-        setUserInfo({
-            token : result.token
-        });
+      let userInfo = {
+        token: result.token,
+        email : value.email
+      };
+      setUserInfo(userInfo);
+
+      localStorage.setItem("userInfo",JSON.stringify(userInfo));
+      navigatePage("/");
+    }else{
+      alert("Authentication Error!");
     }
 
     setLoading(false);
-    alert(JSON.stringify(result));
   };
-
 
   return (
     <Grommet>
+      <GlobalStyle />
       <Container
         fill
-        background="light-1"
+        background="light-3"
         alignContent="center"
         justify="center"
         align="center"
       >
-        <Box border round="small" pad="small" width="20em">
+        <Box
+          round="small"
+          pad="medium"
+          width="20em"
+          background="light-2"
+          elevation="large"
+        >
           <Form onSubmit={handleSubmit}>
             <Box direction="row" justify="center">
               <Box
@@ -71,12 +92,17 @@ const Login = () => {
             <FormField label="User Name">
               <TextInput
                 name="email"
+                icon={<User />}
                 pattern="^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$"
-                value="eve.holt@reqres.in"
               />
             </FormField>
             <FormField label="Password">
-              <TextInput name="password" type="password" value="cityslicka" />
+              <TextInput
+                icon={<Keyboard />}
+                name="password"
+                type="password"
+                value="cityslicka"
+              />
             </FormField>
             <Button
               label="Login"

@@ -101,7 +101,6 @@ const Login = () => {
                 icon={<Keyboard />}
                 name="password"
                 type="password"
-                value="cityslicka"
               />
             </FormField>
             <Button

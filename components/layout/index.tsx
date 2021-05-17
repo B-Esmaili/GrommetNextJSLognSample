@@ -20,13 +20,13 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 const LoaderWrap = styled.div`
-    position:absolute;
-    width:100%;
-    height:100%;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 const Layout: React.FC<LayoutProps> = (props) => {
   let { children } = props;
@@ -40,40 +40,42 @@ const Layout: React.FC<LayoutProps> = (props) => {
   }, []);
 
   return (
-    <Container
-      fill="horizontal"
-      columns={["small", "flex"]}
-      rows={["flex"]}
-      areas={[
-        {
-          name: "sidebar",
-          start: [0, 0],
-          end: [0, 0],
-        },
-        {
-          name: "main",
-          start: [1, 0],
-          end: [1, 0],
-        },
-      ]}
-    >
+    <div>
       <GlobalStyle />
       {!userInfo?.token && (
         <LoaderWrap>
           <MainLoader />
         </LoaderWrap>
       )}
-      {userInfo?.token && (
-        <>
-          <Box gridArea="sidebar" fill>
-            <SideBar />
-          </Box>
-          <Box gridArea="main" fill pad="medium">
-            {children}
-          </Box>
-        </>
-      )}
-    </Container>
+      <Box>
+        {userInfo?.token && (
+          <Container
+            fill="horizontal"
+            columns={["small", "flex"]}
+            rows={["flex"]}
+            areas={[
+              {
+                name: "sidebar",
+                start: [0, 0],
+                end: [0, 0],
+              },
+              {
+                name: "main",
+                start: [1, 0],
+                end: [1, 0],
+              },
+            ]}
+          >
+            <Box gridArea="sidebar" fill>
+              <SideBar />
+            </Box>
+            <Box gridArea="main" fill pad="medium">
+              <div>{children}</div>
+            </Box>
+          </Container>
+        )}
+      </Box>
+    </div>
   );
 };
 
